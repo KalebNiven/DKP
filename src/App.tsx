@@ -5,14 +5,14 @@ import { DKPTransaction } from './types';
 const App: React.FC = () => {
     const transactions: DKPTransaction[] = [
         {
-            id: 1,
+            id: '1', // Changed to string
             description: 'Transaction 1',
             timestamp: '2023-10-01T12:00:00Z',
             type: 'EARN',
             amount: 100,
         },
         {
-            id: 2,
+            id: '2', // Changed to string
             description: 'Transaction 2',
             timestamp: '2023-10-02T12:00:00Z',
             type: 'SPEND',

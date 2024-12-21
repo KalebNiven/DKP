@@ -1,21 +1,32 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+interface DKPState {
+    balance: number;
+    transactions: any[];
+    loading: boolean;
+    error: string | null;
+}
+
+const initialState: DKPState = {
+    balance: 0,
+    transactions: [],
+    loading: false,
+    error: null,
+};
+
+// Async thunk to fetch DKP balance
 export const fetchDKPBalance = createAsyncThunk(
-    'dkp/fetchBalance',
+    'dkp/fetchDKPBalance',
     async (userId: string) => {
-        const response = await fetch(`/api/dkp/balance/${userId}`);
-        return response.json();
+        const response = await fetch(`/api/dkp/${userId}`);
+        const data = await response.json();
+        return data;
     }
 );
 
 const dkpSlice = createSlice({
     name: 'dkp',
-    initialState: {
-        balance: 0,
-        transactions: [],
-        loading: false,
-        error: null
-    } as DKPState,
+    initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
@@ -31,27 +42,7 @@ const dkpSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || 'Failed to fetch DKP';
             });
-    }
+    },
 });
 
-// src/hooks/useDKP.ts
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useAuth } from './useAuth';
-import { fetchDKPBalance } from '../store/slices/dkpSlice';
-
-export const useDKP = () => {
-    const dispatch = useDispatch();
-    const { user } = useAuth();
-    const dkp = useSelector((state) => state.dkp);
-
-    useEffect(() => {
-        if (user?.id) {
-            dispatch(fetchDKPBalance(user.id));
-        }
-    }, [dispatch, user?.id]);
-
-    return dkp;
-};
-
-
+export default dkpSlice.reducer;
